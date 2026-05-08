@@ -343,6 +343,8 @@ export const IPC = {
   START_WINDOW_DRAG: 'clui:start-window-drag',
   RESET_WINDOW_POSITION: 'clui:reset-window-position',
   IS_VISIBLE: 'clui:is-visible',
+  SET_WINDOW_MODE: 'clui:set-window-mode',
+  WINDOW_MODE_CHANGED: 'clui:window-mode-changed',
 
   // Skill provisioning (main → renderer)
   SKILL_STATUS: 'clui:skill-status',

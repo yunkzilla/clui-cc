@@ -7,6 +7,7 @@ import { InputBar } from './components/InputBar'
 import { StatusBar } from './components/StatusBar'
 import { MarketplacePanel } from './components/MarketplacePanel'
 import { PopoverLayerProvider } from './components/PopoverLayer'
+import { FloatingIcon } from './components/FloatingIcon'
 import { useClaudeEvents } from './hooks/useClaudeEvents'
 import { useHealthReconciliation } from './hooks/useHealthReconciliation'
 import { useSessionStore } from './stores/sessionStore'
@@ -20,6 +21,7 @@ export default function App() {
 
   const activeTabStatus = useSessionStore((s) => s.tabs.find((t) => t.id === s.activeTabId)?.status)
   const addAttachments = useSessionStore((s) => s.addAttachments)
+  const windowMode = useSessionStore((s) => s.windowMode)
   const colors = useColors()
   const setSystemTheme = useThemeStore((s) => s.setSystemTheme)
   const expandedUI = useThemeStore((s) => s.expandedUI)
@@ -37,6 +39,16 @@ export default function App() {
     })
     return unsub
   }, [setSystemTheme])
+
+  // Sync window mode (popup ↔ icon) — changes can come from main (tray menu) too.
+  useEffect(() => {
+    if (!window.clui?.onWindowModeChange) return
+    return window.clui.onWindowModeChange((mode) => {
+      if (useSessionStore.getState().windowMode !== mode) {
+        useSessionStore.setState({ windowMode: mode, marketplaceOpen: false })
+      }
+    })
+  }, [])
 
   useEffect(() => {
     useSessionStore.getState().initStaticInfo().then(() => {
@@ -59,6 +71,7 @@ export default function App() {
 
   // Shared drag ref — must be declared before the setIgnoreMouseEvents effect so both closures can read it
   const dragRef = useRef<{ startX: number; startY: number } | null>(null)
+  const dragDistRef = useRef(0)
 
   // Vertical position tracking — window moves first (until macOS clamps it), then CSS overflows
   const PILL_HEIGHT_CONST = 720
@@ -115,8 +128,9 @@ export default function App() {
       if (el.closest('button, input, textarea, a, select, [role="button"], [contenteditable], .cm-editor')) return
       if (!el.closest('[data-clui-ui]')) return
       e.preventDefault()
-      // Double-click: snap back to default position
-      if (e.detail >= 2) {
+      const isIconMode = useSessionStore.getState().windowMode === 'icon'
+      // Double-click: in popup mode snap back to default; in icon mode it's just a click.
+      if (e.detail >= 2 && !isIconMode) {
         window.clui.resetWindowPosition()
         windowYRef.current = initialWindowY
         cardYRef.current = 0
@@ -126,6 +140,7 @@ export default function App() {
       // Ensure full mouse capture for the duration of the drag
       window.clui.setIgnoreMouseEvents(false)
       dragRef.current = { startX: e.screenX, startY: e.screenY }
+      dragDistRef.current = 0
     }
 
     const onMouseMove = (e: MouseEvent) => {
@@ -133,34 +148,41 @@ export default function App() {
       const dx = e.screenX - dragRef.current.startX
       const dy = e.screenY - dragRef.current.startY
       if (dx !== 0 || dy !== 0) {
-        // Horizontal: always native window movement (full screen width range)
-        if (dx !== 0) window.clui.startWindowDrag(dx, 0)
-        // Vertical: move window first (until macOS y constraint), then CSS within window
-        if (dy !== 0) {
-          if (dy < 0) {
-            // Moving up — window first, then CSS overflow
-            const windowCanMove = windowYRef.current - minWindowY
-            const windowDy = Math.max(-windowCanMove, dy)
-            const cssDy = dy - windowDy
-            if (windowDy !== 0) {
-              window.clui.startWindowDrag(0, windowDy)
-              windowYRef.current += windowDy
-            }
-            if (cssDy !== 0) {
-              cardYRef.current += cssDy
-              document.documentElement.style.setProperty('--clui-card-y', `${cardYRef.current}px`)
-            }
-          } else {
-            // Moving down — undo CSS first, then move window
-            const cssUndo = Math.min(-cardYRef.current, dy)
-            const windowDy = dy - cssUndo
-            if (cssUndo !== 0) {
-              cardYRef.current += cssUndo
-              document.documentElement.style.setProperty('--clui-card-y', `${cardYRef.current}px`)
-            }
-            if (windowDy !== 0) {
-              window.clui.startWindowDrag(0, windowDy)
-              windowYRef.current += windowDy
+        dragDistRef.current += Math.abs(dx) + Math.abs(dy)
+        const isIconMode = useSessionStore.getState().windowMode === 'icon'
+        if (isIconMode) {
+          // Icon mode: small window, no macOS top-clamp gymnastics — just move the window.
+          window.clui.startWindowDrag(dx, dy)
+        } else {
+          // Horizontal: always native window movement (full screen width range)
+          if (dx !== 0) window.clui.startWindowDrag(dx, 0)
+          // Vertical: move window first (until macOS y constraint), then CSS within window
+          if (dy !== 0) {
+            if (dy < 0) {
+              // Moving up — window first, then CSS overflow
+              const windowCanMove = windowYRef.current - minWindowY
+              const windowDy = Math.max(-windowCanMove, dy)
+              const cssDy = dy - windowDy
+              if (windowDy !== 0) {
+                window.clui.startWindowDrag(0, windowDy)
+                windowYRef.current += windowDy
+              }
+              if (cssDy !== 0) {
+                cardYRef.current += cssDy
+                document.documentElement.style.setProperty('--clui-card-y', `${cardYRef.current}px`)
+              }
+            } else {
+              // Moving down — undo CSS first, then move window
+              const cssUndo = Math.min(-cardYRef.current, dy)
+              const windowDy = dy - cssUndo
+              if (cssUndo !== 0) {
+                cardYRef.current += cssUndo
+                document.documentElement.style.setProperty('--clui-card-y', `${cardYRef.current}px`)
+              }
+              if (windowDy !== 0) {
+                window.clui.startWindowDrag(0, windowDy)
+                windowYRef.current += windowDy
+              }
             }
           }
         }
@@ -170,7 +192,12 @@ export default function App() {
     }
 
     const onMouseUp = () => {
+      const wasClick = dragRef.current !== null && dragDistRef.current < 5
       dragRef.current = null
+      dragDistRef.current = 0
+      if (wasClick && useSessionStore.getState().windowMode === 'icon') {
+        useSessionStore.getState().setWindowMode('popup')
+      }
     }
 
     document.addEventListener('mousedown', onMouseDown)
@@ -205,6 +232,14 @@ export default function App() {
     if (!files || files.length === 0) return
     addAttachments(files)
   }, [addAttachments])
+
+  if (windowMode === 'icon') {
+    return (
+      <PopoverLayerProvider>
+        <FloatingIcon />
+      </PopoverLayerProvider>
+    )
+  }
 
   return (
     <PopoverLayerProvider>

@@ -46,6 +46,10 @@ export interface CluiAPI {
   startWindowDrag(deltaX: number, deltaY: number): void
   /** Reset overlay to its default bottom-center position */
   resetWindowPosition(): void
+  /** Switch between full popup and floating icon */
+  setWindowMode(mode: 'popup' | 'icon'): void
+  /** Notified when main process switches window mode */
+  onWindowModeChange(callback: (mode: 'popup' | 'icon') => void): () => void
 
   // ─── Event listeners (main → renderer) ───
   onEvent(callback: (tabId: string, event: NormalizedEvent) => void): () => void
@@ -106,6 +110,12 @@ const api: CluiAPI = {
     ipcRenderer.send(IPC.START_WINDOW_DRAG, deltaX, deltaY),
   resetWindowPosition: () => ipcRenderer.send(IPC.RESET_WINDOW_POSITION),
   setWindowWidth: (width) => ipcRenderer.send(IPC.SET_WINDOW_WIDTH, width),
+  setWindowMode: (mode) => ipcRenderer.send(IPC.SET_WINDOW_MODE, mode),
+  onWindowModeChange: (callback) => {
+    const handler = (_e: Electron.IpcRendererEvent, mode: 'popup' | 'icon') => callback(mode)
+    ipcRenderer.on(IPC.WINDOW_MODE_CHANGED, handler)
+    return () => ipcRenderer.removeListener(IPC.WINDOW_MODE_CHANGED, handler)
+  },
 
   // ─── Event listeners ───
   onEvent: (callback) => {

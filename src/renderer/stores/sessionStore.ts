@@ -54,6 +54,8 @@ interface State {
   activeTabId: string
   /** Global expand/collapse — user-controlled, not per-tab */
   isExpanded: boolean
+  /** Native window form: full popup or collapsed floating icon */
+  windowMode: 'popup' | 'icon'
   /** Global info fetched on startup (not per-session) */
   staticInfo: StaticInfo | null
   /** User's preferred model override (null = use default) */
@@ -80,6 +82,7 @@ interface State {
   closeTab: (tabId: string) => void
   clearTab: () => void
   toggleExpanded: () => void
+  setWindowMode: (mode: 'popup' | 'icon') => void
   toggleMarketplace: () => void
   closeMarketplace: () => void
   loadMarketplace: (forceRefresh?: boolean) => Promise<void>
@@ -153,6 +156,7 @@ export const useSessionStore = create<State>((set, get) => ({
   tabs: [initialTab],
   activeTabId: initialTab.id,
   isExpanded: false,
+  windowMode: 'popup',
   staticInfo: null,
   preferredModel: null,
   permissionMode: 'ask',
@@ -252,6 +256,12 @@ export const useSessionStore = create<State>((set, get) => ({
         ? s.tabs.map((t) => t.id === activeTabId ? { ...t, hasUnread: false } : t)
         : s.tabs,
     }))
+  },
+
+  setWindowMode: (mode) => {
+    if (get().windowMode === mode) return
+    set({ windowMode: mode, marketplaceOpen: false })
+    window.clui.setWindowMode(mode)
   },
 
   toggleMarketplace: () => {

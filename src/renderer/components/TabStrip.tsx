@@ -1,6 +1,6 @@
 import React from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Plus, X } from '@phosphor-icons/react'
+import { Plus, X, ArrowsIn } from '@phosphor-icons/react'
 import { useSessionStore } from '../stores/sessionStore'
 import { HistoryPicker } from './HistoryPicker'
 import { SettingsPopover } from './SettingsPopover'
@@ -125,6 +125,15 @@ export function TabStrip() {
         <HistoryPicker />
 
         <SettingsPopover />
+
+        <button
+          onClick={() => useSessionStore.getState().setWindowMode('icon')}
+          className="flex-shrink-0 w-6 h-6 flex items-center justify-center rounded-full transition-colors"
+          style={{ color: colors.textTertiary }}
+          title="Collapse to floating icon"
+        >
+          <ArrowsIn size={14} />
+        </button>
       </div>
     </div>
   )

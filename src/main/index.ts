@@ -69,6 +69,14 @@ const controlPlane = new ControlPlane(INTERACTIVE_PTY)
 const BAR_WIDTH = 1040
 const PILL_HEIGHT = 720  // Fixed native window height — extra room for expanded UI + shadow buffers
 const PILL_BOTTOM_MARGIN = 24
+const ICON_SIZE = 64
+
+// Floating-icon mode: native window shrinks to ICON_SIZE; the renderer paints
+// a small puck the user can drag and click to expand back to the popup.
+type WindowMode = 'popup' | 'icon'
+let windowMode: WindowMode = 'popup'
+let popupBounds: Electron.Rectangle | null = null
+let iconBounds: Electron.Rectangle | null = null
 
 // ─── Broadcast to renderer ───
 
@@ -164,6 +172,7 @@ function createWindow(): void {
     },
   })
   lastWindowBounds = mainWindow.getBounds()
+  popupBounds = lastWindowBounds
 
   // Belt-and-suspenders: panel already joins all spaces and floats,
   // but explicit flags ensure correct behavior on older Electron builds.
@@ -238,13 +247,26 @@ function resetWindowPosition(): void {
   const { width: sw, height: sh } = display.workAreaSize
   const { x: dx, y: dy } = display.workArea
 
-  mainWindow.setBounds({
+  if (windowMode === 'icon') {
+    iconBounds = {
+      x: dx + sw - ICON_SIZE - PILL_BOTTOM_MARGIN,
+      y: dy + sh - ICON_SIZE - PILL_BOTTOM_MARGIN,
+      width: ICON_SIZE,
+      height: ICON_SIZE,
+    }
+    mainWindow.setBounds(iconBounds)
+    lastWindowBounds = iconBounds
+    return
+  }
+
+  popupBounds = {
     x: dx + Math.round((sw - BAR_WIDTH) / 2),
     y: dy + sh - PILL_HEIGHT - PILL_BOTTOM_MARGIN,
     width: BAR_WIDTH,
     height: PILL_HEIGHT,
-  })
-  lastWindowBounds = mainWindow.getBounds()
+  }
+  mainWindow.setBounds(popupBounds)
+  lastWindowBounds = popupBounds
 }
 
 function toggleWindow(source = 'unknown'): void {
@@ -304,12 +326,68 @@ ipcMain.on(IPC.START_WINDOW_DRAG, (event, deltaX: number, deltaY: number) => {
     // Vertical is handled in two phases in the renderer: window first (until macOS clamps),
     // then CSS translateY within the window — so deltaY here is always within allowed range
     win.setPosition(Math.round(x + deltaX), Math.round(y + deltaY))
-    lastWindowBounds = win.getBounds()
+    const b = win.getBounds()
+    lastWindowBounds = b
+    if (windowMode === 'popup') popupBounds = b
+    else iconBounds = b
   }
 })
 
 ipcMain.on(IPC.RESET_WINDOW_POSITION, () => {
   resetWindowPosition()
+})
+
+function setWindowMode(mode: WindowMode): void {
+  if (!mainWindow || mainWindow.isDestroyed()) return
+  if (windowMode === mode) return
+
+  // Snapshot the bounds we're leaving so we can restore them later.
+  const current = mainWindow.getBounds()
+  if (windowMode === 'popup') popupBounds = current
+  else iconBounds = current
+
+  windowMode = mode
+
+  if (mode === 'icon') {
+    if (!iconBounds) {
+      // First collapse: place icon centered on whatever the popup was showing.
+      iconBounds = {
+        x: current.x + Math.round(current.width / 2 - ICON_SIZE / 2),
+        y: current.y + Math.round(current.height / 2 - ICON_SIZE / 2),
+        width: ICON_SIZE,
+        height: ICON_SIZE,
+      }
+    } else {
+      // Re-assert size in case ICON_SIZE changed across launches.
+      iconBounds = { ...iconBounds, width: ICON_SIZE, height: ICON_SIZE }
+    }
+    mainWindow.setBounds(iconBounds)
+    lastWindowBounds = iconBounds
+  } else {
+    if (!popupBounds) {
+      const cursor = screen.getCursorScreenPoint()
+      const display = screen.getDisplayNearestPoint(cursor)
+      const { width: sw, height: sh } = display.workAreaSize
+      const { x: dx, y: dy } = display.workArea
+      popupBounds = {
+        x: dx + Math.round((sw - BAR_WIDTH) / 2),
+        y: dy + sh - PILL_HEIGHT - PILL_BOTTOM_MARGIN,
+        width: BAR_WIDTH,
+        height: PILL_HEIGHT,
+      }
+    } else {
+      popupBounds = { ...popupBounds, width: BAR_WIDTH, height: PILL_HEIGHT }
+    }
+    mainWindow.setBounds(popupBounds)
+    lastWindowBounds = popupBounds
+  }
+
+  broadcast(IPC.WINDOW_MODE_CHANGED, mode)
+}
+
+ipcMain.on(IPC.SET_WINDOW_MODE, (_event, mode: WindowMode) => {
+  if (mode !== 'popup' && mode !== 'icon') return
+  setWindowMode(mode)
 })
 
 // ─── IPC Handlers (typed, strict) ───
@@ -1153,6 +1231,9 @@ app.whenReady().then(async () => {
   tray.setContextMenu(
     Menu.buildFromTemplate([
       { label: 'Show Clui CC', click: () => showWindow('tray menu') },
+      { label: 'Collapse to icon', click: () => { setWindowMode('icon'); showWindow('tray menu collapse') } },
+      { label: 'Expand to popup', click: () => { setWindowMode('popup'); showWindow('tray menu expand') } },
+      { type: 'separator' },
       { label: 'Quit', click: () => { app.quit() } },
     ])
   )
