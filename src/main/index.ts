@@ -390,8 +390,20 @@ ipcMain.on(IPC.SET_WINDOW_MODE, (_event, mode: WindowMode) => {
   setWindowMode(mode)
 })
 
-ipcMain.on(IPC.QUIT_APP, () => {
+ipcMain.on(IPC.QUIT_APP, async (event) => {
   log('IPC QUIT_APP — terminating')
+  // Flush renderer storage (localStorage, IndexedDB) to disk so a freshly
+  // selected theme survives the instant quit. flushStorageData is
+  // best-effort — swallow errors so quit never hangs.
+  try {
+    const win = BrowserWindow.fromWebContents(event.sender)
+    const ses = win?.webContents?.session
+    if (ses) {
+      await Promise.resolve(ses.flushStorageData?.()).catch(() => {})
+    }
+  } catch (err) {
+    log(`flushStorageData failed: ${err instanceof Error ? err.message : String(err)}`)
+  }
   app.quit()
 })
 

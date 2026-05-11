@@ -322,10 +322,10 @@ export function SettingsPopover() {
                 }}
                 onMouseEnter={(e) => { e.currentTarget.style.background = colors.statusErrorBg }}
                 onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent' }}
-                title="Quit Mira Deck"
+                title="Terminate"
               >
                 <Power size={14} />
-                <span className="text-[12px] font-medium">Quit Mira Deck</span>
+                <span className="text-[12px] font-medium">Terminate</span>
               </button>
             </div>
           </div>
