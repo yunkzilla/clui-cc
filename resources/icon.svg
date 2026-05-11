@@ -1,61 +1,91 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  Mira app icon.
-  Bold geometric M wordmark on Pantone Tangerine Tango (17-1463).
-  Deep V apex with a softly rounded valley — confident, modern, no fussy detail.
-  Designed at 1024 master; scales cleanly to 16×16.
+  Mira Deck logo — v1
+  Cyberpunk: bold M floating over a terminal baseline + blinking cursor.
+  Near-black plate with hot-amber neon glow.
 -->
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024">
   <defs>
-    <!-- Tangerine Tango background, slightly deepened at the bottom -->
-    <linearGradient id="mira-bg" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0"   stop-color="#f25a30"/>
-      <stop offset="1"   stop-color="#d23a10"/>
+    <!-- Near-black plate with subtle navy tint, deeper toward the bottom -->
+    <linearGradient id="md-bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0"   stop-color="#0c1020"/>
+      <stop offset="0.6" stop-color="#070a16"/>
+      <stop offset="1"   stop-color="#03050d"/>
     </linearGradient>
 
-    <!-- Subtle top highlight -->
-    <linearGradient id="mira-hi" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0"    stop-color="#ffffff" stop-opacity="0.18"/>
-      <stop offset="0.45" stop-color="#ffffff" stop-opacity="0"/>
-    </linearGradient>
+    <!-- Vignette pushes focus to the M -->
+    <radialGradient id="md-vignette" cx="0.5" cy="0.45" r="0.7">
+      <stop offset="0.55" stop-color="#000000" stop-opacity="0"/>
+      <stop offset="1"    stop-color="#000000" stop-opacity="0.55"/>
+    </radialGradient>
 
-    <!-- Soft drop shadow under the M for depth -->
-    <filter id="mira-shadow" x="-10%" y="-10%" width="120%" height="120%">
-      <feGaussianBlur in="SourceAlpha" stdDeviation="10"/>
-      <feOffset dx="0" dy="6"/>
-      <feComponentTransfer><feFuncA type="linear" slope="0.30"/></feComponentTransfer>
-      <feMerge>
-        <feMergeNode/>
-        <feMergeNode in="SourceGraphic"/>
-      </feMerge>
+    <!-- Outer neon glow on the M -->
+    <filter id="md-glow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="22"/>
+    </filter>
+    <!-- Tighter inner glow on the cursor / baseline -->
+    <filter id="md-glow-tight" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="8"/>
     </filter>
   </defs>
 
   <!-- Background plate (squircle) -->
-  <rect width="1024" height="1024" rx="228" fill="url(#mira-bg)"/>
-  <rect width="1024" height="1024" rx="228" fill="url(#mira-hi)"/>
+  <rect width="1024" height="1024" rx="228" fill="url(#md-bg)"/>
+  <rect width="1024" height="1024" rx="228" fill="url(#md-vignette)"/>
+
+  <!-- Subtle CRT scan-line hint -->
+  <g opacity="0.05" stroke="#7ad6ff" stroke-width="1">
+    <line x1="0" y1="220" x2="1024" y2="220"/>
+    <line x1="0" y1="380" x2="1024" y2="380"/>
+    <line x1="0" y1="540" x2="1024" y2="540"/>
+    <line x1="0" y1="700" x2="1024" y2="700"/>
+  </g>
 
   <!--
-    M letterform — single closed path traced clockwise.
-    Vertices:
-      (240,240) outer top-left
-      (350,240) inner top of left leg
-      (488,715) bottom of left diagonal (just before V apex)
-      Q (512,762) (536,715)   smoothly-rounded V apex
-      (674,240) inner top of right leg
-      (784,240) outer top-right
-      (784,784) bottom-right
-      (240,784) bottom-left
+    The M letterform — same geometry as Mira's mark, sized down so a
+    terminal baseline + cursor sit cleanly underneath.
+    Bounds: x 260–764, y 188–688. V apex around y=628.
   -->
-  <path
-    d="M 240 240
-       L 350 240
-       L 488 715
-       Q 512 762 536 715
-       L 674 240
-       L 784 240
-       L 784 784
-       L 240 784 Z"
-    fill="#ffffff"
-    filter="url(#mira-shadow)"/>
+  <g>
+    <!-- Outer neon halo (blurred copy of the M) -->
+    <path
+      d="M 260 188
+         L 370 188
+         L 498 620
+         Q 512 660 526 620
+         L 654 188
+         L 764 188
+         L 764 688
+         L 260 688 Z"
+      fill="#ff9a2c"
+      filter="url(#md-glow)"
+      opacity="0.85"/>
+
+    <!-- Main M body -->
+    <path
+      d="M 260 188
+         L 370 188
+         L 498 620
+         Q 512 660 526 620
+         L 654 188
+         L 764 188
+         L 764 688
+         L 260 688 Z"
+      fill="#fff3d4"/>
+  </g>
+
+  <!-- Terminal baseline — a thin glowing rail spanning most of the width -->
+  <g>
+    <line x1="220" y1="800" x2="704" y2="800"
+          stroke="#ff9a2c" stroke-width="6" stroke-linecap="round"
+          filter="url(#md-glow-tight)" opacity="0.95"/>
+    <line x1="220" y1="800" x2="704" y2="800"
+          stroke="#fff3d4" stroke-width="3" stroke-linecap="round"/>
+
+    <!-- Blinking-style cursor block at the right end of the line -->
+    <rect x="724" y="772" width="56" height="56" rx="4"
+          fill="#ff9a2c" filter="url(#md-glow-tight)" opacity="0.95"/>
+    <rect x="724" y="772" width="56" height="56" rx="4"
+          fill="#fff3d4"/>
+  </g>
 </svg>

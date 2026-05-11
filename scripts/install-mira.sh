@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
-# Build Mira and install it into /Applications.
+# Build Mira Deck and install it into /Applications.
 # Idempotent: also acts as an "update" — pulls latest, rebuilds, replaces
-# the existing /Applications/Mira.app. Removes /Applications/Hatch.app
-# if found (legacy name).
+# the existing "/Applications/Mira Deck.app". Removes legacy bundles
+# (/Applications/Mira.app and /Applications/Hatch.app) if found.
 #
 # Usage:
 #   bash scripts/install-mira.sh           # build + install from current code
@@ -26,8 +26,11 @@ for arg in "$@"; do
   esac
 done
 
-APP_DEST="/Applications/Mira.app"
-LEGACY_APP="/Applications/Hatch.app"
+APP_DEST="/Applications/Mira Deck.app"
+LEGACY_APPS=(
+  "/Applications/Mira.app"
+  "/Applications/Hatch.app"
+)
 
 if [[ $DO_PULL -eq 1 ]]; then
   echo "→ Pulling latest from origin…"
@@ -49,23 +52,26 @@ npx electron-builder --mac --arm64 >/tmp/mira-build.log 2>&1 || {
   exit 1
 }
 
-BUILT_APP=$(find release -maxdepth 3 -type d -name "Mira.app" | head -1)
+BUILT_APP=$(find release -maxdepth 3 -type d -name "Mira Deck.app" | head -1)
 if [[ -z "$BUILT_APP" ]]; then
-  echo "Build succeeded but Mira.app not found in release/. Check /tmp/mira-build.log." >&2
+  echo "Build succeeded but 'Mira Deck.app' not found in release/. Check /tmp/mira-build.log." >&2
   exit 1
 fi
 
 echo "→ Installing to $APP_DEST"
 # Stop running copies first so we can replace the bundles cleanly.
+osascript -e 'quit app "Mira Deck"' 2>/dev/null || true
 osascript -e 'quit app "Mira"' 2>/dev/null || true
 osascript -e 'quit app "Hatch"' 2>/dev/null || true
 sleep 1
 
-# Remove the legacy Hatch.app if present so the user ends up with one assistant.
-if [[ -d "$LEGACY_APP" ]]; then
-  echo "→ Removing legacy $LEGACY_APP"
-  rm -rf "$LEGACY_APP"
-fi
+# Remove any legacy bundles so the user ends up with one assistant.
+for legacy in "${LEGACY_APPS[@]}"; do
+  if [[ -d "$legacy" ]]; then
+    echo "→ Removing legacy $legacy"
+    rm -rf "$legacy"
+  fi
+done
 
 rm -rf "$APP_DEST"
 cp -R "$BUILT_APP" "$APP_DEST"
@@ -74,11 +80,11 @@ cp -R "$BUILT_APP" "$APP_DEST"
 xattr -dr com.apple.quarantine "$APP_DEST" 2>/dev/null || true
 
 echo
-echo "✔ Mira installed at $APP_DEST"
-echo "  Launch from Spotlight (⌘Space → Mira) or Applications."
+echo "✔ Mira Deck installed at $APP_DEST"
+echo "  Launch from Spotlight (⌘Space → Mira Deck) or Applications."
 echo
 
 if [[ $DO_OPEN -eq 1 ]]; then
-  echo "→ Launching Mira…"
+  echo "→ Launching Mira Deck…"
   open "$APP_DEST"
 fi

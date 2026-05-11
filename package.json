@@ -1,7 +1,7 @@
 {
-  "name": "mira",
+  "name": "mira-deck",
   "version": "0.1.0",
-  "description": "Mira — your Claude Code assistant, always on the desktop",
+  "description": "Mira Deck — your cyberpunk Claude Code assistant, always on the desktop",
   "license": "MIT",
   "repository": {
     "type": "git",
@@ -32,8 +32,8 @@
     "zustand": "^5.0.0"
   },
   "build": {
-    "appId": "com.mira.app",
-    "productName": "Mira",
+    "appId": "com.miradeck.app",
+    "productName": "Mira Deck",
     "directories": {
       "output": "release"
     },
@@ -50,7 +50,7 @@
       "entitlements": "resources/entitlements.mac.plist",
       "entitlementsInherit": "resources/entitlements.mac.plist",
       "extendInfo": {
-        "NSMicrophoneUsageDescription": "Mira uses your microphone to transcribe voice input locally with Whisper."
+        "NSMicrophoneUsageDescription": "Mira Deck uses your microphone to transcribe voice input locally with Whisper."
       },
       "target": [
         { "target": "dmg",  "arch": ["arm64", "x64"] },
@@ -59,7 +59,7 @@
       "identity": null
     },
     "dmg": {
-      "title": "Mira ${version}",
+      "title": "Mira Deck ${version}",
       "icon": "resources/icon.icns",
       "contents": [
         { "x": 130, "y": 220, "type": "file" },
