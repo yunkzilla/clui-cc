@@ -51,6 +51,8 @@ export interface CluiAPI {
   setWindowMode(mode: 'popup' | 'icon'): void
   /** Notified when main process switches window mode */
   onWindowModeChange(callback: (mode: 'popup' | 'icon') => void): () => void
+  /** Terminate Mira Deck entirely (the tray icon also goes away) */
+  quitApp(): void
 
   // ─── Event listeners (main → renderer) ───
   onEvent(callback: (tabId: string, event: NormalizedEvent) => void): () => void
@@ -118,6 +120,7 @@ const api: CluiAPI = {
     ipcRenderer.on(IPC.WINDOW_MODE_CHANGED, handler)
     return () => ipcRenderer.removeListener(IPC.WINDOW_MODE_CHANGED, handler)
   },
+  quitApp: () => ipcRenderer.send(IPC.QUIT_APP),
 
   // ─── Event listeners ───
   onEvent: (callback) => {

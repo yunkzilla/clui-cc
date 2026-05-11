@@ -346,6 +346,7 @@ export const IPC = {
   IS_VISIBLE: 'clui:is-visible',
   SET_WINDOW_MODE: 'clui:set-window-mode',
   WINDOW_MODE_CHANGED: 'clui:window-mode-changed',
+  QUIT_APP: 'clui:quit-app',
 
   // Skill provisioning (main → renderer)
   SKILL_STATUS: 'clui:skill-status',

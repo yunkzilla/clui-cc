@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react'
 import { createPortal } from 'react-dom'
 import { motion } from 'framer-motion'
-import { DotsThree, Bell, ArrowsOutSimple, Palette, Check } from '@phosphor-icons/react'
+import { DotsThree, Bell, ArrowsOutSimple, Palette, Check, Power } from '@phosphor-icons/react'
 import { useThemeStore, themes, themeOrder } from '../theme'
 import { useSessionStore } from '../stores/sessionStore'
 import { usePopoverLayer } from './PopoverLayer'
@@ -302,6 +302,31 @@ export function SettingsPopover() {
                   )
                 })}
               </div>
+            </div>
+
+            <div style={{ height: 1, background: colors.popoverBorder }} />
+
+            {/* Quit — fully terminate the app (tray icon goes away too) */}
+            <div>
+              <button
+                type="button"
+                onClick={() => {
+                  setOpen(false)
+                  window.clui.quitApp()
+                }}
+                className="w-full flex items-center gap-2 rounded-md px-2 py-1.5 cursor-pointer transition-colors"
+                style={{
+                  background: 'transparent',
+                  color: colors.statusError,
+                  border: 'none',
+                }}
+                onMouseEnter={(e) => { e.currentTarget.style.background = colors.statusErrorBg }}
+                onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent' }}
+                title="Quit Mira Deck"
+              >
+                <Power size={14} />
+                <span className="text-[12px] font-medium">Quit Mira Deck</span>
+              </button>
             </div>
           </div>
         </motion.div>,

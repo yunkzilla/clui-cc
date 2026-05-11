@@ -19,13 +19,13 @@
       <stop offset="1"    stop-color="#000000" stop-opacity="0.55"/>
     </radialGradient>
 
-    <!-- Outer neon glow on the M -->
+    <!-- Outer neon glow on the M — subtle, just a hint of warmth -->
     <filter id="md-glow" x="-30%" y="-30%" width="160%" height="160%">
-      <feGaussianBlur stdDeviation="22"/>
+      <feGaussianBlur stdDeviation="10"/>
     </filter>
     <!-- Tighter inner glow on the cursor / baseline -->
     <filter id="md-glow-tight" x="-30%" y="-30%" width="160%" height="160%">
-      <feGaussianBlur stdDeviation="8"/>
+      <feGaussianBlur stdDeviation="3"/>
     </filter>
   </defs>
 
@@ -59,7 +59,7 @@
          L 260 688 Z"
       fill="#ff9a2c"
       filter="url(#md-glow)"
-      opacity="0.85"/>
+      opacity="0.50"/>
 
     <!-- Main M body -->
     <path

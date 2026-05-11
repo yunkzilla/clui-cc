@@ -51,17 +51,17 @@ export function FloatingIcon() {
           borderRadius: 9999,
           background: `radial-gradient(circle at 50% 35%, ${PLATE_TOP}, ${PLATE_BOTTOM})`,
           border: `1px solid ${PLATE_BORDER}`,
-          // Inner subtle ring + outer ambient amber glow
+          // Inner subtle ring + a very gentle amber accent + grounded drop shadow
           boxShadow: `
-            inset 0 1px 0 rgba(255,255,255,0.08),
-            0 0 18px rgba(255, 154, 44, 0.30),
-            0 4px 14px rgba(0,0,0,0.55)
+            inset 0 1px 0 rgba(255,255,255,0.06),
+            0 0 4px rgba(255, 154, 44, 0.12),
+            0 3px 10px rgba(0,0,0,0.50)
           `,
           position: 'relative',
         }}
         title="Drag to move · click to expand"
       >
-        {/* Amber neon halo behind the M */}
+        {/* Amber neon halo behind the M — subtle, not a torch */}
         <span
           aria-hidden
           style={{
@@ -70,8 +70,8 @@ export function FloatingIcon() {
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            filter: 'blur(6px)',
-            opacity: 0.85,
+            filter: 'blur(3px)',
+            opacity: 0.40,
             pointerEvents: 'none',
           }}
         >
@@ -91,8 +91,7 @@ export function FloatingIcon() {
             height: 2,
             borderRadius: 1,
             background: NEON,
-            boxShadow: `0 0 4px ${NEON}`,
-            opacity: 0.9,
+            opacity: 0.85,
           }}
         />
         <span
@@ -105,7 +104,6 @@ export function FloatingIcon() {
             height: 6,
             borderRadius: 1,
             background: CORE,
-            boxShadow: `0 0 4px ${NEON}`,
           }}
         />
 

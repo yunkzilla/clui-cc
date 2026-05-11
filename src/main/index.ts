@@ -390,6 +390,11 @@ ipcMain.on(IPC.SET_WINDOW_MODE, (_event, mode: WindowMode) => {
   setWindowMode(mode)
 })
 
+ipcMain.on(IPC.QUIT_APP, () => {
+  log('IPC QUIT_APP — terminating')
+  app.quit()
+})
+
 // ─── IPC Handlers (typed, strict) ───
 
 ipcMain.handle(IPC.START, async () => {
