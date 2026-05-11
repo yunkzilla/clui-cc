@@ -1,7 +1,7 @@
 {
-  "name": "hatch",
+  "name": "mira",
   "version": "0.1.0",
-  "description": "Hatch — Claude Code on your desktop, summoned from a floating hatch",
+  "description": "Mira — your Claude Code assistant, always on the desktop",
   "license": "MIT",
   "repository": {
     "type": "git",
@@ -19,7 +19,7 @@
     "dist": "electron-vite build --mode production && electron-builder --mac --dir",
     "package": "electron-vite build --mode production && electron-builder --mac",
     "icon": "bash scripts/build-icon.sh",
-    "install:app": "bash scripts/install-hatch.sh",
+    "install:app": "bash scripts/install-mira.sh",
     "doctor": "bash scripts/doctor.sh",
     "postinstall": "electron-builder install-app-deps && bash scripts/patch-dev-icon.sh"
   },
@@ -32,8 +32,8 @@
     "zustand": "^5.0.0"
   },
   "build": {
-    "appId": "com.hatch.app",
-    "productName": "Hatch",
+    "appId": "com.mira.app",
+    "productName": "Mira",
     "directories": {
       "output": "release"
     },
@@ -50,7 +50,7 @@
       "entitlements": "resources/entitlements.mac.plist",
       "entitlementsInherit": "resources/entitlements.mac.plist",
       "extendInfo": {
-        "NSMicrophoneUsageDescription": "Hatch uses your microphone to transcribe voice input locally with Whisper."
+        "NSMicrophoneUsageDescription": "Mira uses your microphone to transcribe voice input locally with Whisper."
       },
       "target": [
         { "target": "dmg",  "arch": ["arm64", "x64"] },
@@ -59,7 +59,7 @@
       "identity": null
     },
     "dmg": {
-      "title": "Hatch ${version}",
+      "title": "Mira ${version}",
       "icon": "resources/icon.icns",
       "contents": [
         { "x": 130, "y": 220, "type": "file" },
