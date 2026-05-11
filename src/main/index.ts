@@ -1260,11 +1260,11 @@ app.whenReady().then(async () => {
   const trayIcon = nativeImage.createFromPath(trayIconPath)
   trayIcon.setTemplateImage(true)
   tray = new Tray(trayIcon)
-  tray.setToolTip('Clui CC — Claude Code UI')
+  tray.setToolTip('Hatch — Claude Code on your desktop')
   tray.on('click', () => toggleWindow('tray click'))
   tray.setContextMenu(
     Menu.buildFromTemplate([
-      { label: 'Show Clui CC', click: () => showWindow('tray menu') },
+      { label: 'Show Hatch', click: () => showWindow('tray menu') },
       { label: 'Collapse to icon', click: () => { setWindowMode('icon'); showWindow('tray menu collapse') } },
       { label: 'Expand to popup', click: () => { setWindowMode('popup'); showWindow('tray menu expand') } },
       { type: 'separator' },

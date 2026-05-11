@@ -1,16 +1,16 @@
 {
-  "name": "clui",
+  "name": "hatch",
   "version": "0.1.0",
-  "description": "Clui CC — Command Line User Interface for Claude Code",
+  "description": "Hatch — Claude Code on your desktop, summoned from a floating hatch",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/lcoutodemos/clui-cc.git"
+    "url": "https://github.com/yunkzilla/clui-cc.git"
   },
   "bugs": {
-    "url": "https://github.com/lcoutodemos/clui-cc/issues"
+    "url": "https://github.com/yunkzilla/clui-cc/issues"
   },
-  "homepage": "https://github.com/lcoutodemos/clui-cc#readme",
+  "homepage": "https://github.com/yunkzilla/clui-cc#readme",
   "main": "dist/main/index.js",
   "scripts": {
     "dev": "electron-vite dev",
@@ -29,8 +29,8 @@
     "zustand": "^5.0.0"
   },
   "build": {
-    "appId": "com.clui.app",
-    "productName": "Clui CC",
+    "appId": "com.hatch.app",
+    "productName": "Hatch",
     "directories": {
       "output": "release"
     },
@@ -46,7 +46,7 @@
       "entitlements": "resources/entitlements.mac.plist",
       "entitlementsInherit": "resources/entitlements.mac.plist",
       "extendInfo": {
-        "NSMicrophoneUsageDescription": "Clui CC uses your microphone to transcribe voice input locally with Whisper."
+        "NSMicrophoneUsageDescription": "Hatch uses your microphone to transcribe voice input locally with Whisper."
       }
     }
   },

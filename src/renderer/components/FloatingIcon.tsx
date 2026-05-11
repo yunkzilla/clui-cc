@@ -1,7 +1,7 @@
 import React from 'react'
-import { HeadCircuit } from '@phosphor-icons/react'
 import { useColors } from '../theme'
 import { useSessionStore } from '../stores/sessionStore'
+import { HatchLogo } from './HatchLogo'
 
 /**
  * Collapsed window form: a small circular puck the user can drag anywhere
@@ -46,7 +46,7 @@ export function FloatingIcon() {
         }}
         title="Drag to move · click to expand"
       >
-        <HeadCircuit size={26} weight="duotone" />
+        <HatchLogo size={28} color={colors.textPrimary} accentColor={colors.accent} />
         {dotColor && (
           <span
             className={isRunning ? 'animate-pulse-dot' : ''}
