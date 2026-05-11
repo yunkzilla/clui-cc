@@ -653,6 +653,40 @@ ipcMain.handle(IPC.LOAD_SESSION, async (_e, arg: { sessionId: string; projectPat
   }
 })
 
+ipcMain.handle(IPC.DELETE_SESSION, async (_e, arg: { sessionId: string; projectPath?: string }) => {
+  const { sessionId, projectPath } = arg || {}
+  log(`IPC DELETE_SESSION ${sessionId}${projectPath ? ` (path=${projectPath})` : ''}`)
+
+  const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
+  if (typeof sessionId !== 'string' || !UUID_RE.test(sessionId)) {
+    log(`DELETE_SESSION: rejected invalid sessionId: ${sessionId}`)
+    return { ok: false, error: 'invalid-session-id' }
+  }
+
+  const cwd = projectPath || process.cwd()
+  if (/[\0\r\n]/.test(cwd) || !cwd.startsWith('/')) {
+    log(`DELETE_SESSION: rejected invalid projectPath: ${cwd}`)
+    return { ok: false, error: 'invalid-project-path' }
+  }
+
+  try {
+    const { unlinkSync } = require('fs')
+    const encodedPath = cwd.replace(/\//g, '-')
+    const filePath = join(homedir(), '.claude', 'projects', encodedPath, `${sessionId}.jsonl`)
+    if (!existsSync(filePath)) {
+      // Already gone — treat as success so the UI can update.
+      return { ok: true }
+    }
+    unlinkSync(filePath)
+    log(`DELETE_SESSION: removed ${filePath}`)
+    return { ok: true }
+  } catch (err) {
+    const message = err instanceof Error ? err.message : String(err)
+    log(`DELETE_SESSION error: ${message}`)
+    return { ok: false, error: message }
+  }
+})
+
 ipcMain.handle(IPC.SELECT_DIRECTORY, async () => {
   if (!mainWindow) return null
   // macOS: activate app so unparented dialog appears on top (not behind other apps).
