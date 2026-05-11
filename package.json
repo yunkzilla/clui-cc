@@ -17,6 +17,9 @@
     "build": "electron-vite build",
     "preview": "electron-vite preview",
     "dist": "electron-vite build --mode production && electron-builder --mac --dir",
+    "package": "electron-vite build --mode production && electron-builder --mac",
+    "icon": "bash scripts/build-icon.sh",
+    "install:app": "bash scripts/install-hatch.sh",
     "doctor": "bash scripts/doctor.sh",
     "postinstall": "electron-builder install-app-deps && bash scripts/patch-dev-icon.sh"
   },
@@ -43,11 +46,26 @@
     ],
     "mac": {
       "icon": "resources/icon.icns",
+      "category": "public.app-category.developer-tools",
       "entitlements": "resources/entitlements.mac.plist",
       "entitlementsInherit": "resources/entitlements.mac.plist",
       "extendInfo": {
         "NSMicrophoneUsageDescription": "Hatch uses your microphone to transcribe voice input locally with Whisper."
-      }
+      },
+      "target": [
+        { "target": "dmg",  "arch": ["arm64", "x64"] },
+        { "target": "zip",  "arch": ["arm64", "x64"] }
+      ],
+      "identity": null
+    },
+    "dmg": {
+      "title": "Hatch ${version}",
+      "icon": "resources/icon.icns",
+      "contents": [
+        { "x": 130, "y": 220, "type": "file" },
+        { "x": 410, "y": 220, "type": "link", "path": "/Applications" }
+      ],
+      "window": { "width": 540, "height": 380 }
     }
   },
   "devDependencies": {
