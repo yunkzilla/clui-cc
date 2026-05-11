@@ -1,8 +1,8 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react'
 import { createPortal } from 'react-dom'
 import { motion } from 'framer-motion'
-import { DotsThree, Bell, ArrowsOutSimple, Moon } from '@phosphor-icons/react'
-import { useThemeStore } from '../theme'
+import { DotsThree, Bell, ArrowsOutSimple, Palette, Check } from '@phosphor-icons/react'
+import { useThemeStore, themes, themeOrder } from '../theme'
 import { useSessionStore } from '../stores/sessionStore'
 import { usePopoverLayer } from './PopoverLayer'
 import { useColors } from '../theme'
@@ -204,21 +204,78 @@ export function SettingsPopover() {
 
             <div style={{ height: 1, background: colors.popoverBorder }} />
 
-            {/* Theme */}
+            {/* Theme picker */}
             <div>
-              <div className="flex items-center justify-between gap-3">
-                <div className="flex items-center gap-2 min-w-0">
-                  <Moon size={14} style={{ color: colors.textTertiary }} />
-                  <div className="text-[12px] font-medium" style={{ color: colors.textPrimary }}>
-                    Dark theme
-                  </div>
+              <div className="flex items-center gap-2 mb-2">
+                <Palette size={14} style={{ color: colors.textTertiary }} />
+                <div className="text-[12px] font-medium" style={{ color: colors.textPrimary }}>
+                  Theme
                 </div>
-                <RowToggle
-                  checked={themeMode === 'dark'}
-                  onChange={(next) => setThemeMode(next ? 'dark' : 'light')}
-                  colors={colors}
-                  label="Toggle dark theme"
-                />
+              </div>
+              <div className="grid grid-cols-2 gap-1.5">
+                {themeOrder.map((key) => {
+                  const t = themes[key]
+                  if (!t) return null
+                  const selected = themeMode === key
+                  return (
+                    <button
+                      key={key}
+                      type="button"
+                      onClick={() => setThemeMode(key)}
+                      className="flex items-center gap-2 rounded-md px-1.5 py-1.5 transition-colors text-left"
+                      style={{
+                        background: selected ? colors.surfaceHover : 'transparent',
+                        border: `1px solid ${selected ? colors.accentBorderMedium : 'transparent'}`,
+                      }}
+                      title={t.displayName}
+                    >
+                      <span
+                        className="flex-shrink-0 relative"
+                        style={{
+                          width: 22,
+                          height: 22,
+                          borderRadius: 9999,
+                          background: t.swatch.bg,
+                          border: `1px solid ${colors.containerBorder}`,
+                          overflow: 'hidden',
+                        }}
+                      >
+                        {/* Right half = accent stripe so it shows on every swatch */}
+                        <span
+                          style={{
+                            position: 'absolute',
+                            top: 0,
+                            right: 0,
+                            bottom: 0,
+                            width: '50%',
+                            background: t.swatch.accent,
+                          }}
+                        />
+                        {selected && (
+                          <span
+                            style={{
+                              position: 'absolute',
+                              inset: 0,
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              color: t.swatch.text,
+                              mixBlendMode: 'difference',
+                            }}
+                          >
+                            <Check size={11} weight="bold" />
+                          </span>
+                        )}
+                      </span>
+                      <span
+                        className="text-[11px] leading-tight truncate"
+                        style={{ color: selected ? colors.textPrimary : colors.textSecondary }}
+                      >
+                        {t.displayName}
+                      </span>
+                    </button>
+                  )
+                })}
               </div>
             </div>
           </div>

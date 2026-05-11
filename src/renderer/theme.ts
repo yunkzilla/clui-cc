@@ -276,9 +276,309 @@ const lightColors = {
 
 export type ColorPalette = { [K in keyof typeof darkColors]: string }
 
+// ─── Additional theme palettes ───
+// Each theme overrides a subset of tokens on top of the dark or light base.
+
+function makePalette(base: ColorPalette, overrides: Partial<ColorPalette>): ColorPalette {
+  return { ...base, ...overrides }
+}
+
+// Pantone Color of the Year 2025 — warm, grounded brown
+const mochaMousseColors = makePalette(lightColors, {
+  containerBg: '#f5ede3',
+  containerBgCollapsed: '#efe5d5',
+  containerBorder: '#d9c6ad',
+  surfacePrimary: '#ebe0cd',
+  surfaceSecondary: '#d9c6ad',
+  surfaceHover: 'rgba(58, 46, 35, 0.05)',
+  surfaceActive: 'rgba(58, 46, 35, 0.08)',
+  inputPillBg: '#fff8ed',
+  inputBorder: '#d9c6ad',
+  inputFocusBorder: 'rgba(164, 120, 100, 0.45)',
+  textPrimary: '#3a2e23',
+  textSecondary: '#594434',
+  textTertiary: '#8a7561',
+  textMuted: '#d9c6ad',
+  accent: '#a47864',
+  accentLight: 'rgba(164, 120, 100, 0.1)',
+  accentSoft: 'rgba(164, 120, 100, 0.16)',
+  accentBorder: 'rgba(164, 120, 100, 0.2)',
+  accentBorderMedium: 'rgba(164, 120, 100, 0.3)',
+  statusRunning: '#a47864',
+  statusRunningBg: 'rgba(164, 120, 100, 0.1)',
+  statusPermission: '#a47864',
+  statusPermissionGlow: 'rgba(164, 120, 100, 0.35)',
+  tabActive: '#ebe0cd',
+  tabActiveBorder: '#d9c6ad',
+  tabHover: 'rgba(58, 46, 35, 0.05)',
+  userBubble: '#ebe0cd',
+  userBubbleBorder: '#d9c6ad',
+  userBubbleText: '#3a2e23',
+  toolBg: '#ebe0cd',
+  toolBorder: '#d9c6ad',
+  toolRunningBorder: 'rgba(164, 120, 100, 0.3)',
+  toolRunningBg: 'rgba(164, 120, 100, 0.05)',
+  timelineLine: '#d9c6ad',
+  timelineNode: 'rgba(164, 120, 100, 0.2)',
+  timelineNodeActive: '#a47864',
+  sendBg: '#a47864',
+  sendHover: '#8a624f',
+  sendDisabled: 'rgba(164, 120, 100, 0.3)',
+  popoverBg: '#f5ede3',
+  popoverBorder: '#d9c6ad',
+  codeBg: '#f0e5d2',
+  micBg: '#ebe0cd',
+  micColor: '#594434',
+  micDisabled: '#c8b89e',
+  btnDisabled: '#c8b89e',
+  btnHoverColor: '#3a2e23',
+  btnHoverBg: '#ebe0cd',
+  placeholder: '#b0997e',
+})
+
+// Pantone Color of the Year 2024 — soft, velvety peach
+const peachFuzzColors = makePalette(lightColors, {
+  containerBg: '#fbf2e9',
+  containerBgCollapsed: '#f7e9da',
+  containerBorder: '#ead4be',
+  surfacePrimary: '#f1ddc4',
+  surfaceSecondary: '#ead4be',
+  surfaceHover: 'rgba(74, 53, 40, 0.05)',
+  surfaceActive: 'rgba(74, 53, 40, 0.08)',
+  inputPillBg: '#fff8f0',
+  inputBorder: '#ead4be',
+  inputFocusBorder: 'rgba(232, 159, 118, 0.45)',
+  textPrimary: '#4a3528',
+  textSecondary: '#6b4f3d',
+  textTertiary: '#a08570',
+  textMuted: '#ead4be',
+  accent: '#e89f76',
+  accentLight: 'rgba(255, 190, 152, 0.15)',
+  accentSoft: 'rgba(255, 190, 152, 0.22)',
+  accentBorder: 'rgba(232, 159, 118, 0.22)',
+  accentBorderMedium: 'rgba(232, 159, 118, 0.32)',
+  statusRunning: '#e89f76',
+  statusRunningBg: 'rgba(232, 159, 118, 0.12)',
+  statusPermission: '#e89f76',
+  statusPermissionGlow: 'rgba(232, 159, 118, 0.35)',
+  tabActive: '#f1ddc4',
+  tabActiveBorder: '#ead4be',
+  tabHover: 'rgba(74, 53, 40, 0.05)',
+  userBubble: '#f1ddc4',
+  userBubbleBorder: '#ead4be',
+  userBubbleText: '#4a3528',
+  toolBg: '#f1ddc4',
+  toolBorder: '#ead4be',
+  toolRunningBorder: 'rgba(232, 159, 118, 0.3)',
+  toolRunningBg: 'rgba(232, 159, 118, 0.05)',
+  timelineLine: '#ead4be',
+  timelineNode: 'rgba(232, 159, 118, 0.2)',
+  timelineNodeActive: '#e89f76',
+  sendBg: '#e89f76',
+  sendHover: '#d9885e',
+  sendDisabled: 'rgba(232, 159, 118, 0.3)',
+  textOnAccent: '#3c2520',
+  popoverBg: '#fbf2e9',
+  popoverBorder: '#ead4be',
+  codeBg: '#f5e8d4',
+  micBg: '#f1ddc4',
+  micColor: '#6b4f3d',
+  micDisabled: '#d9c4ad',
+  btnDisabled: '#d9c4ad',
+  btnHoverColor: '#4a3528',
+  btnHoverBg: '#f1ddc4',
+  placeholder: '#b89a82',
+})
+
+// Pantone Color of the Year 2023 — dramatic, rich magenta on deep wine
+const vivaMagentaColors = makePalette(darkColors, {
+  containerBg: '#1f1418',
+  containerBgCollapsed: '#1b1015',
+  containerBorder: '#3a2026',
+  surfacePrimary: '#2c1c22',
+  surfaceSecondary: '#3a2026',
+  surfaceHover: 'rgba(255, 255, 255, 0.05)',
+  surfaceActive: 'rgba(255, 255, 255, 0.08)',
+  inputPillBg: '#1a1014',
+  inputBorder: '#3a2026',
+  inputFocusBorder: 'rgba(190, 52, 85, 0.45)',
+  textPrimary: '#f0d8de',
+  textSecondary: '#d8b8c0',
+  textTertiary: '#8a6470',
+  textMuted: '#2c1c22',
+  accent: '#be3455',
+  accentLight: 'rgba(190, 52, 85, 0.12)',
+  accentSoft: 'rgba(190, 52, 85, 0.2)',
+  accentBorder: 'rgba(190, 52, 85, 0.22)',
+  accentBorderMedium: 'rgba(190, 52, 85, 0.32)',
+  statusRunning: '#be3455',
+  statusRunningBg: 'rgba(190, 52, 85, 0.12)',
+  statusPermission: '#be3455',
+  statusPermissionGlow: 'rgba(190, 52, 85, 0.4)',
+  tabActive: '#2c1c22',
+  tabActiveBorder: '#3a2026',
+  tabHover: 'rgba(255, 255, 255, 0.05)',
+  userBubble: '#2c1c22',
+  userBubbleBorder: '#3a2026',
+  userBubbleText: '#f0d8de',
+  toolBg: '#2c1c22',
+  toolBorder: '#3a2026',
+  toolRunningBorder: 'rgba(190, 52, 85, 0.35)',
+  toolRunningBg: 'rgba(190, 52, 85, 0.08)',
+  timelineLine: '#2c1c22',
+  timelineNode: 'rgba(190, 52, 85, 0.22)',
+  timelineNodeActive: '#be3455',
+  sendBg: '#be3455',
+  sendHover: '#a82846',
+  sendDisabled: 'rgba(190, 52, 85, 0.3)',
+  popoverBg: '#251a1e',
+  popoverBorder: '#3a2026',
+  codeBg: '#15090c',
+  micBg: '#2c1c22',
+  micColor: '#d8b8c0',
+  btnHoverColor: '#f0d8de',
+  btnHoverBg: '#2c1c22',
+  placeholder: '#705560',
+  cardShadow: '0 2px 8px rgba(0,0,0,0.4)',
+  cardShadowCollapsed: '0 2px 6px rgba(0,0,0,0.5)',
+})
+
+// Calacatta marble — bright white surfaces, gold veining accent
+const calacattaColors = makePalette(lightColors, {
+  containerBg: '#fbfaf5',
+  containerBgCollapsed: '#f5f3ec',
+  containerBorder: '#e0d8c0',
+  surfacePrimary: '#f0ebdc',
+  surfaceSecondary: '#e0d8c0',
+  surfaceHover: 'rgba(42, 37, 32, 0.04)',
+  surfaceActive: 'rgba(42, 37, 32, 0.07)',
+  inputPillBg: '#fffefa',
+  inputBorder: '#e0d8c0',
+  inputFocusBorder: 'rgba(184, 154, 92, 0.45)',
+  textPrimary: '#2a2520',
+  textSecondary: '#4a4338',
+  textTertiary: '#8a8170',
+  textMuted: '#e0d8c0',
+  accent: '#b89a5c',
+  accentLight: 'rgba(184, 154, 92, 0.1)',
+  accentSoft: 'rgba(184, 154, 92, 0.16)',
+  accentBorder: 'rgba(184, 154, 92, 0.22)',
+  accentBorderMedium: 'rgba(184, 154, 92, 0.32)',
+  statusRunning: '#b89a5c',
+  statusRunningBg: 'rgba(184, 154, 92, 0.1)',
+  statusPermission: '#b89a5c',
+  statusPermissionGlow: 'rgba(184, 154, 92, 0.4)',
+  tabActive: '#f0ebdc',
+  tabActiveBorder: '#e0d8c0',
+  tabHover: 'rgba(42, 37, 32, 0.04)',
+  userBubble: '#f0ebdc',
+  userBubbleBorder: '#e0d8c0',
+  userBubbleText: '#2a2520',
+  toolBg: '#f0ebdc',
+  toolBorder: '#e0d8c0',
+  toolRunningBorder: 'rgba(184, 154, 92, 0.3)',
+  toolRunningBg: 'rgba(184, 154, 92, 0.05)',
+  timelineLine: '#e0d8c0',
+  timelineNode: 'rgba(184, 154, 92, 0.2)',
+  timelineNodeActive: '#b89a5c',
+  sendBg: '#b89a5c',
+  sendHover: '#a08648',
+  sendDisabled: 'rgba(184, 154, 92, 0.3)',
+  popoverBg: '#fbfaf5',
+  popoverBorder: '#e0d8c0',
+  codeBg: '#f0ebdc',
+  micBg: '#f0ebdc',
+  micColor: '#4a4338',
+  micDisabled: '#cec5ab',
+  btnDisabled: '#cec5ab',
+  btnHoverColor: '#2a2520',
+  btnHoverBg: '#f0ebdc',
+  placeholder: '#a89e85',
+})
+
+// Nero Marquina marble — black field with warm cream veining
+const marquinaColors = makePalette(darkColors, {
+  containerBg: '#131312',
+  containerBgCollapsed: '#0f0f0e',
+  containerBorder: '#2a2926',
+  surfacePrimary: '#1e1d1b',
+  surfaceSecondary: '#2a2926',
+  surfaceHover: 'rgba(232, 226, 210, 0.05)',
+  surfaceActive: 'rgba(232, 226, 210, 0.08)',
+  inputPillBg: '#1a1a18',
+  inputBorder: '#2a2926',
+  inputFocusBorder: 'rgba(212, 200, 168, 0.45)',
+  textPrimary: '#e8e2d2',
+  textSecondary: '#c8c2b2',
+  textTertiary: '#807a6a',
+  textMuted: '#2a2926',
+  accent: '#d4c8a8',
+  accentLight: 'rgba(212, 200, 168, 0.1)',
+  accentSoft: 'rgba(212, 200, 168, 0.18)',
+  accentBorder: 'rgba(212, 200, 168, 0.22)',
+  accentBorderMedium: 'rgba(212, 200, 168, 0.32)',
+  statusRunning: '#d4c8a8',
+  statusRunningBg: 'rgba(212, 200, 168, 0.1)',
+  statusPermission: '#d4c8a8',
+  statusPermissionGlow: 'rgba(212, 200, 168, 0.4)',
+  tabActive: '#1e1d1b',
+  tabActiveBorder: '#2a2926',
+  tabHover: 'rgba(232, 226, 210, 0.05)',
+  userBubble: '#1e1d1b',
+  userBubbleBorder: '#2a2926',
+  userBubbleText: '#e8e2d2',
+  toolBg: '#1e1d1b',
+  toolBorder: '#2a2926',
+  toolRunningBorder: 'rgba(212, 200, 168, 0.3)',
+  toolRunningBg: 'rgba(212, 200, 168, 0.05)',
+  timelineLine: '#2a2926',
+  timelineNode: 'rgba(212, 200, 168, 0.2)',
+  timelineNodeActive: '#d4c8a8',
+  sendBg: '#d4c8a8',
+  sendHover: '#b8ad8e',
+  sendDisabled: 'rgba(212, 200, 168, 0.3)',
+  textOnAccent: '#1a1a18',
+  popoverBg: '#1a1a18',
+  popoverBorder: '#2a2926',
+  codeBg: '#0a0a08',
+  micBg: '#1e1d1b',
+  micColor: '#c8c2b2',
+  btnHoverColor: '#e8e2d2',
+  btnHoverBg: '#1e1d1b',
+  placeholder: '#605a4d',
+  cardShadow: '0 2px 8px rgba(0,0,0,0.45)',
+  cardShadowCollapsed: '0 2px 6px rgba(0,0,0,0.55)',
+})
+
+// ─── Theme registry ───
+
+export interface ThemeDefinition {
+  name: string
+  displayName: string
+  base: 'light' | 'dark'
+  palette: ColorPalette
+  /** Three-color swatch for UI previews */
+  swatch: { bg: string; accent: string; text: string }
+}
+
+const swatchOf = (p: ColorPalette) => ({ bg: p.containerBg, accent: p.accent, text: p.textPrimary })
+
+export const themes: Record<string, ThemeDefinition> = {
+  dark:      { name: 'dark',      displayName: 'Classic Dark',  base: 'dark',  palette: darkColors,          swatch: swatchOf(darkColors) },
+  light:     { name: 'light',     displayName: 'Classic Light', base: 'light', palette: lightColors,         swatch: swatchOf(lightColors) },
+  mocha:     { name: 'mocha',     displayName: 'Mocha Mousse',  base: 'light', palette: mochaMousseColors,   swatch: swatchOf(mochaMousseColors) },
+  peach:     { name: 'peach',     displayName: 'Peach Fuzz',    base: 'light', palette: peachFuzzColors,     swatch: swatchOf(peachFuzzColors) },
+  magenta:   { name: 'magenta',   displayName: 'Viva Magenta',  base: 'dark',  palette: vivaMagentaColors,   swatch: swatchOf(vivaMagentaColors) },
+  calacatta: { name: 'calacatta', displayName: 'Calacatta',     base: 'light', palette: calacattaColors,     swatch: swatchOf(calacattaColors) },
+  marquina:  { name: 'marquina',  displayName: 'Nero Marquina', base: 'dark',  palette: marquinaColors,      swatch: swatchOf(marquinaColors) },
+}
+
+/** Order in which themes appear in the picker */
+export const themeOrder: string[] = ['dark', 'light', 'mocha', 'peach', 'magenta', 'calacatta', 'marquina']
+
 // ─── Theme store ───
 
-export type ThemeMode = 'system' | 'light' | 'dark'
+export type ThemeMode = 'system' | keyof typeof themes | string
 
 interface ThemeState {
   isDark: boolean
@@ -308,10 +608,17 @@ function syncTokensToCss(tokens: ColorPalette): void {
   }
 }
 
-function applyTheme(isDark: boolean): void {
-  document.documentElement.classList.toggle('dark', isDark)
-  document.documentElement.classList.toggle('light', !isDark)
-  syncTokensToCss(isDark ? darkColors : lightColors)
+/** Resolve a themeMode + OS state to the active ThemeDefinition. */
+function resolveTheme(mode: ThemeMode, systemIsDark: boolean): ThemeDefinition {
+  if (mode === 'system') return systemIsDark ? themes.dark : themes.light
+  return themes[mode as string] || themes.dark
+}
+
+function applyTheme(theme: ThemeDefinition): void {
+  document.documentElement.classList.toggle('dark', theme.base === 'dark')
+  document.documentElement.classList.toggle('light', theme.base === 'light')
+  document.documentElement.setAttribute('data-theme', theme.name)
+  syncTokensToCss(theme.palette)
 }
 
 const SETTINGS_KEY = 'clui-settings'
@@ -321,8 +628,12 @@ function loadSettings(): { themeMode: ThemeMode; soundEnabled: boolean; expanded
     const raw = localStorage.getItem(SETTINGS_KEY)
     if (raw) {
       const parsed = JSON.parse(raw)
+      const validMode =
+        parsed.themeMode === 'system' || (typeof parsed.themeMode === 'string' && parsed.themeMode in themes)
+          ? parsed.themeMode
+          : 'dark'
       return {
-        themeMode: ['light', 'dark'].includes(parsed.themeMode) ? parsed.themeMode : 'dark',
+        themeMode: validMode,
         soundEnabled: typeof parsed.soundEnabled === 'boolean' ? parsed.soundEnabled : true,
         expandedUI: typeof parsed.expandedUI === 'boolean' ? parsed.expandedUI : false,
       }
@@ -337,21 +648,25 @@ function saveSettings(s: { themeMode: ThemeMode; soundEnabled: boolean; expanded
 
 // Always start in compact UI mode on launch.
 const saved = { ...loadSettings(), expandedUI: false }
+const initialTheme = resolveTheme(saved.themeMode, true)
 
 export const useThemeStore = create<ThemeState>((set, get) => ({
-  isDark: saved.themeMode === 'dark' ? true : saved.themeMode === 'light' ? false : true,
+  isDark: initialTheme.base === 'dark',
   themeMode: saved.themeMode,
   soundEnabled: saved.soundEnabled,
   expandedUI: saved.expandedUI,
   _systemIsDark: true,
   setIsDark: (isDark) => {
-    set({ isDark })
-    applyTheme(isDark)
+    // Legacy entrypoint — pick the closest classic theme.
+    const mode: ThemeMode = isDark ? 'dark' : 'light'
+    const theme = resolveTheme(mode, get()._systemIsDark)
+    set({ isDark: theme.base === 'dark', themeMode: mode })
+    applyTheme(theme)
   },
   setThemeMode: (mode) => {
-    const resolved = mode === 'system' ? get()._systemIsDark : mode === 'dark'
-    set({ themeMode: mode, isDark: resolved })
-    applyTheme(resolved)
+    const theme = resolveTheme(mode, get()._systemIsDark)
+    set({ themeMode: mode, isDark: theme.base === 'dark' })
+    applyTheme(theme)
     saveSettings({ themeMode: mode, soundEnabled: get().soundEnabled, expandedUI: get().expandedUI })
   },
   setSoundEnabled: (enabled) => {
@@ -366,19 +681,21 @@ export const useThemeStore = create<ThemeState>((set, get) => ({
     set({ _systemIsDark: isDark })
     // Only apply if following system
     if (get().themeMode === 'system') {
-      set({ isDark })
-      applyTheme(isDark)
+      const theme = resolveTheme('system', isDark)
+      set({ isDark: theme.base === 'dark' })
+      applyTheme(theme)
     }
   },
 }))
 
 // Initialize CSS vars with saved theme
-syncTokensToCss(saved.themeMode === 'light' ? lightColors : darkColors)
+syncTokensToCss(initialTheme.palette)
 
 /** Reactive hook — returns the active color palette */
 export function useColors(): ColorPalette {
-  const isDark = useThemeStore((s) => s.isDark)
-  return isDark ? darkColors : lightColors
+  const themeMode = useThemeStore((s) => s.themeMode)
+  const systemIsDark = useThemeStore((s) => s._systemIsDark)
+  return resolveTheme(themeMode, systemIsDark).palette
 }
 
 /** Non-reactive getter — use outside React components */
