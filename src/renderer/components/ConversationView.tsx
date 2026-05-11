@@ -321,16 +321,36 @@ function EmptyState() {
 
 // ─── Copy Button ───
 
-function CopyButton({ text }: { text: string }) {
+function CopyButton({ text, compact = false, title = 'Copy' }: { text: string; compact?: boolean; title?: string }) {
   const [copied, setCopied] = useState(false)
   const colors = useColors()
 
-  const handleCopy = async () => {
+  const handleCopy = async (e: React.MouseEvent) => {
+    e.stopPropagation()
     try {
       await navigator.clipboard.writeText(text)
       setCopied(true)
       setTimeout(() => setCopied(false), 1500)
     } catch {}
+  }
+
+  if (compact) {
+    return (
+      <button
+        onClick={handleCopy}
+        className="inline-flex items-center justify-center rounded-md cursor-pointer flex-shrink-0"
+        style={{
+          width: 18,
+          height: 18,
+          background: copied ? colors.statusCompleteBg : 'transparent',
+          color: copied ? colors.statusComplete : colors.textTertiary,
+          border: 'none',
+        }}
+        title={copied ? 'Copied' : title}
+      >
+        {copied ? <Check size={11} /> : <Copy size={11} />}
+      </button>
+    )
   }
 
   return (
@@ -346,7 +366,7 @@ function CopyButton({ text }: { text: string }) {
         color: copied ? colors.statusComplete : colors.textTertiary,
         border: 'none',
       }}
-      title="Copy response"
+      title={copied ? 'Copied' : title}
     >
       {copied ? <Check size={11} /> : <Copy size={11} />}
       <span>{copied ? 'Copied' : 'Copy'}</span>
@@ -390,17 +410,28 @@ function InterruptButton({ tabId }: { tabId: string }) {
 
 function UserMessage({ message, skipMotion }: { message: Message; skipMotion?: boolean }) {
   const colors = useColors()
+  const hasText = !!message.content.trim()
   const content = (
-    <div
-      className="text-[13px] leading-[1.5] px-3 py-1.5 max-w-[85%]"
-      style={{
-        background: colors.userBubble,
-        color: colors.userBubbleText,
-        border: `1px solid ${colors.userBubbleBorder}`,
-        borderRadius: '14px 14px 4px 14px',
-      }}
-    >
-      {message.content}
+    <div className="group/usermsg relative max-w-[85%]">
+      <div
+        className="text-[13px] leading-[1.5] px-3 py-1.5"
+        style={{
+          background: colors.userBubble,
+          color: colors.userBubbleText,
+          border: `1px solid ${colors.userBubbleBorder}`,
+          borderRadius: '14px 14px 4px 14px',
+        }}
+      >
+        {message.content}
+      </div>
+      {hasText && (
+        <div
+          className="absolute opacity-50 group-hover/usermsg:opacity-100 transition-opacity duration-100"
+          style={{ top: 2, left: -22 }}
+        >
+          <CopyButton text={message.content} compact title="Copy message" />
+        </div>
+      )}
     </div>
   )
 
@@ -590,11 +621,11 @@ const AssistantMessage = React.memo(function AssistantMessage({
           {message.content}
         </Markdown>
       </div>
-      {/* Copy button — always in DOM, shown via CSS :hover (no React state needed).
+      {/* Copy button — always visible (subtle), full opacity on hover.
           Absolute positioning so it never shifts the text layout. */}
       {message.content.trim() && (
-        <div className="absolute bottom-0 right-0 opacity-0 group-hover/msg:opacity-100 transition-opacity duration-100">
-          <CopyButton text={message.content} />
+        <div className="absolute bottom-0 right-0 opacity-50 group-hover/msg:opacity-100 transition-opacity duration-100">
+          <CopyButton text={message.content} title="Copy response" />
         </div>
       )}
     </div>
@@ -746,32 +777,42 @@ function ToolGroup({ tools, skipMotion }: { tools: Message[]; skipMotion?: boole
                             aria-label="Edit diff"
                           >
                             {oldStr !== null && (
-                              <pre
-                                className="px-2 py-1 whitespace-pre-wrap break-all overflow-y-auto"
-                                aria-label="Removed"
-                                style={{
-                                  background: colors.diffRemovedBg,
-                                  color: colors.textSecondary,
-                                  maxHeight: 120,
-                                  margin: 0,
-                                  fontFamily: monoFont,
-                                  fontSize: 10,
-                                }}
-                              ><span style={{ color: colors.textMuted, userSelect: 'none' }}>- </span>{oldStr.length > 300 ? oldStr.slice(0, 297) + '...' : oldStr}</pre>
+                              <div className="relative group/diffold">
+                                <pre
+                                  className="px-2 py-1 pr-7 whitespace-pre-wrap break-all overflow-y-auto"
+                                  aria-label="Removed"
+                                  style={{
+                                    background: colors.diffRemovedBg,
+                                    color: colors.textSecondary,
+                                    maxHeight: 120,
+                                    margin: 0,
+                                    fontFamily: monoFont,
+                                    fontSize: 10,
+                                  }}
+                                ><span style={{ color: colors.textMuted, userSelect: 'none' }}>- </span>{oldStr.length > 300 ? oldStr.slice(0, 297) + '...' : oldStr}</pre>
+                                <div className="absolute top-1 right-1 opacity-50 group-hover/diffold:opacity-100 transition-opacity duration-100">
+                                  <CopyButton text={oldStr} compact title="Copy removed text" />
+                                </div>
+                              </div>
                             )}
                             {newStr !== null && (
-                              <pre
-                                className="px-2 py-1 whitespace-pre-wrap break-all overflow-y-auto"
-                                aria-label="Added"
-                                style={{
-                                  background: colors.diffAddedBg,
-                                  color: colors.textSecondary,
-                                  maxHeight: 120,
-                                  margin: 0,
-                                  fontFamily: monoFont,
-                                  fontSize: 10,
-                                }}
-                              ><span style={{ color: colors.textMuted, userSelect: 'none' }}>+ </span>{newStr.length > 300 ? newStr.slice(0, 297) + '...' : newStr}</pre>
+                              <div className="relative group/diffnew">
+                                <pre
+                                  className="px-2 py-1 pr-7 whitespace-pre-wrap break-all overflow-y-auto"
+                                  aria-label="Added"
+                                  style={{
+                                    background: colors.diffAddedBg,
+                                    color: colors.textSecondary,
+                                    maxHeight: 120,
+                                    margin: 0,
+                                    fontFamily: monoFont,
+                                    fontSize: 10,
+                                  }}
+                                ><span style={{ color: colors.textMuted, userSelect: 'none' }}>+ </span>{newStr.length > 300 ? newStr.slice(0, 297) + '...' : newStr}</pre>
+                                <div className="absolute top-1 right-1 opacity-50 group-hover/diffnew:opacity-100 transition-opacity duration-100">
+                                  <CopyButton text={newStr} compact title="Copy added text" />
+                                </div>
+                              </div>
                             )}
                           </div>
                         )
@@ -780,19 +821,23 @@ function ToolGroup({ tools, skipMotion }: { tools: Message[]; skipMotion?: boole
                         const content = parsedInput.content
                         const snippet = content.length > 200 ? content.slice(0, 197) + '...' : content
                         return (
-                          <pre
-                            className="mt-1 px-2 py-1 text-[10px] leading-[1.5] rounded whitespace-pre-wrap break-all overflow-y-auto"
-                            aria-label="File content"
-                            style={{
-                              background: colors.surfaceHover,
-                              color: colors.textSecondary,
-                              maxHeight: 120,
-                              margin: 0,
-                              marginTop: 4,
-                              fontFamily: monoFont,
-                              border: `1px solid ${colors.toolBorder}`,
-                            }}
-                          >{snippet}</pre>
+                          <div className="relative group/writebox" style={{ marginTop: 4 }}>
+                            <pre
+                              className="mt-1 px-2 py-1 pr-7 text-[10px] leading-[1.5] rounded whitespace-pre-wrap break-all overflow-y-auto"
+                              aria-label="File content"
+                              style={{
+                                background: colors.surfaceHover,
+                                color: colors.textSecondary,
+                                maxHeight: 120,
+                                margin: 0,
+                                fontFamily: monoFont,
+                                border: `1px solid ${colors.toolBorder}`,
+                              }}
+                            >{snippet}</pre>
+                            <div className="absolute top-2 right-1 opacity-50 group-hover/writebox:opacity-100 transition-opacity duration-100">
+                              <CopyButton text={content} compact title="Copy file content" />
+                            </div>
+                          </div>
                         )
                       }
                       return null
@@ -873,16 +918,24 @@ function ToolGroup({ tools, skipMotion }: { tools: Message[]; skipMotion?: boole
 function SystemMessage({ message, skipMotion }: { message: Message; skipMotion?: boolean }) {
   const isError = message.content.startsWith('Error:') || message.content.includes('unexpectedly')
   const colors = useColors()
+  const hasText = !!message.content.trim()
 
   const inner = (
-    <div
-      className="text-[11px] leading-[1.5] px-2.5 py-1 rounded-lg inline-block whitespace-pre-wrap"
-      style={{
-        background: isError ? colors.statusErrorBg : colors.surfaceHover,
-        color: isError ? colors.statusError : colors.textTertiary,
-      }}
-    >
-      {message.content}
+    <div className="group/sysmsg inline-flex items-start gap-1">
+      <div
+        className="text-[11px] leading-[1.5] px-2.5 py-1 rounded-lg whitespace-pre-wrap"
+        style={{
+          background: isError ? colors.statusErrorBg : colors.surfaceHover,
+          color: isError ? colors.statusError : colors.textTertiary,
+        }}
+      >
+        {message.content}
+      </div>
+      {hasText && (
+        <div className="opacity-50 group-hover/sysmsg:opacity-100 transition-opacity duration-100 pt-[2px]">
+          <CopyButton text={message.content} compact title="Copy message" />
+        </div>
+      )}
     </div>
   )
 
