@@ -212,7 +212,7 @@ export function SettingsPopover() {
                   Theme
                 </div>
               </div>
-              <div className="grid grid-cols-2 gap-1.5">
+              <div className="flex items-center justify-between gap-1 pt-1 pb-2">
                 {themeOrder.map((key) => {
                   const t = themes[key]
                   if (!t) return null
@@ -222,56 +222,81 @@ export function SettingsPopover() {
                       key={key}
                       type="button"
                       onClick={() => setThemeMode(key)}
-                      className="flex items-center gap-2 rounded-md px-1.5 py-1.5 transition-colors text-left"
+                      className="group/swatch relative flex items-center justify-center cursor-pointer"
                       style={{
-                        background: selected ? colors.surfaceHover : 'transparent',
-                        border: `1px solid ${selected ? colors.accentBorderMedium : 'transparent'}`,
+                        width: 30,
+                        height: 30,
+                        borderRadius: 9999,
+                        background: t.swatch.bg,
+                        border: `2px solid ${selected ? t.swatch.accent : colors.containerBorder}`,
+                        overflow: 'hidden',
+                        outline: selected ? `2px solid ${colors.accentBorderMedium}` : 'none',
+                        outlineOffset: 1,
+                        transition: 'transform 0.12s, outline-color 0.12s',
                       }}
-                      title={t.displayName}
+                      onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.transform = 'scale(1.08)' }}
+                      onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.transform = 'scale(1)' }}
                     >
+                      {/* Right half = accent stripe so it shows on every swatch */}
                       <span
-                        className="flex-shrink-0 relative"
                         style={{
-                          width: 22,
-                          height: 22,
-                          borderRadius: 9999,
-                          background: t.swatch.bg,
-                          border: `1px solid ${colors.containerBorder}`,
-                          overflow: 'hidden',
+                          position: 'absolute',
+                          top: 0,
+                          right: 0,
+                          bottom: 0,
+                          width: '50%',
+                          background: t.swatch.accent,
+                        }}
+                      />
+                      {selected && (
+                        <span
+                          style={{
+                            position: 'relative',
+                            color: t.swatch.text,
+                            mixBlendMode: 'difference',
+                            zIndex: 1,
+                          }}
+                        >
+                          <Check size={13} weight="bold" />
+                        </span>
+                      )}
+
+                      {/* Hover tooltip bubble */}
+                      <span
+                        className="opacity-0 group-hover/swatch:opacity-100 transition-opacity duration-100 pointer-events-none"
+                        style={{
+                          position: 'absolute',
+                          bottom: 'calc(100% + 8px)',
+                          left: '50%',
+                          transform: 'translateX(-50%)',
+                          background: colors.popoverBg,
+                          color: colors.textPrimary,
+                          border: `1px solid ${colors.popoverBorder}`,
+                          padding: '3px 8px',
+                          borderRadius: 6,
+                          fontSize: 11,
+                          fontWeight: 500,
+                          lineHeight: 1.2,
+                          whiteSpace: 'nowrap',
+                          zIndex: 50,
+                          boxShadow: colors.popoverShadow,
                         }}
                       >
-                        {/* Right half = accent stripe so it shows on every swatch */}
+                        {t.displayName}
                         <span
                           style={{
                             position: 'absolute',
-                            top: 0,
-                            right: 0,
-                            bottom: 0,
-                            width: '50%',
-                            background: t.swatch.accent,
+                            top: '100%',
+                            left: '50%',
+                            transform: 'translateX(-50%) rotate(45deg)',
+                            width: 6,
+                            height: 6,
+                            background: colors.popoverBg,
+                            borderRight: `1px solid ${colors.popoverBorder}`,
+                            borderBottom: `1px solid ${colors.popoverBorder}`,
+                            marginTop: -3,
                           }}
                         />
-                        {selected && (
-                          <span
-                            style={{
-                              position: 'absolute',
-                              inset: 0,
-                              display: 'flex',
-                              alignItems: 'center',
-                              justifyContent: 'center',
-                              color: t.swatch.text,
-                              mixBlendMode: 'difference',
-                            }}
-                          >
-                            <Check size={11} weight="bold" />
-                          </span>
-                        )}
-                      </span>
-                      <span
-                        className="text-[11px] leading-tight truncate"
-                        style={{ color: selected ? colors.textPrimary : colors.textSecondary }}
-                      >
-                        {t.displayName}
                       </span>
                     </button>
                   )

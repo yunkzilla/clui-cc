@@ -336,58 +336,57 @@ const mochaMousseColors = makePalette(lightColors, {
   placeholder: '#b0997e',
 })
 
-// Pantone Color of the Year 2024 — soft, velvety peach
-const peachFuzzColors = makePalette(lightColors, {
-  containerBg: '#fbf2e9',
-  containerBgCollapsed: '#f7e9da',
-  containerBorder: '#ead4be',
-  surfacePrimary: '#f1ddc4',
-  surfaceSecondary: '#ead4be',
-  surfaceHover: 'rgba(74, 53, 40, 0.05)',
-  surfaceActive: 'rgba(74, 53, 40, 0.08)',
-  inputPillBg: '#fff8f0',
-  inputBorder: '#ead4be',
-  inputFocusBorder: 'rgba(232, 159, 118, 0.45)',
-  textPrimary: '#4a3528',
-  textSecondary: '#6b4f3d',
-  textTertiary: '#a08570',
-  textMuted: '#ead4be',
-  accent: '#e89f76',
-  accentLight: 'rgba(255, 190, 152, 0.15)',
-  accentSoft: 'rgba(255, 190, 152, 0.22)',
-  accentBorder: 'rgba(232, 159, 118, 0.22)',
-  accentBorderMedium: 'rgba(232, 159, 118, 0.32)',
-  statusRunning: '#e89f76',
-  statusRunningBg: 'rgba(232, 159, 118, 0.12)',
-  statusPermission: '#e89f76',
-  statusPermissionGlow: 'rgba(232, 159, 118, 0.35)',
-  tabActive: '#f1ddc4',
-  tabActiveBorder: '#ead4be',
-  tabHover: 'rgba(74, 53, 40, 0.05)',
-  userBubble: '#f1ddc4',
-  userBubbleBorder: '#ead4be',
-  userBubbleText: '#4a3528',
-  toolBg: '#f1ddc4',
-  toolBorder: '#ead4be',
-  toolRunningBorder: 'rgba(232, 159, 118, 0.3)',
-  toolRunningBg: 'rgba(232, 159, 118, 0.05)',
-  timelineLine: '#ead4be',
-  timelineNode: 'rgba(232, 159, 118, 0.2)',
-  timelineNodeActive: '#e89f76',
-  sendBg: '#e89f76',
-  sendHover: '#d9885e',
-  sendDisabled: 'rgba(232, 159, 118, 0.3)',
-  textOnAccent: '#3c2520',
-  popoverBg: '#fbf2e9',
-  popoverBorder: '#ead4be',
-  codeBg: '#f5e8d4',
-  micBg: '#f1ddc4',
-  micColor: '#6b4f3d',
-  micDisabled: '#d9c4ad',
-  btnDisabled: '#d9c4ad',
-  btnHoverColor: '#4a3528',
-  btnHoverBg: '#f1ddc4',
-  placeholder: '#b89a82',
+// Pantone Color of the Year 2022 — cool periwinkle blue-violet on twilight
+const veryPeriColors = makePalette(darkColors, {
+  containerBg: '#181826',
+  containerBgCollapsed: '#14141f',
+  containerBorder: '#2e2e44',
+  surfacePrimary: '#222234',
+  surfaceSecondary: '#2e2e44',
+  surfaceHover: 'rgba(216, 216, 232, 0.05)',
+  surfaceActive: 'rgba(216, 216, 232, 0.08)',
+  inputPillBg: '#1e1e2e',
+  inputBorder: '#2e2e44',
+  inputFocusBorder: 'rgba(102, 103, 171, 0.45)',
+  textPrimary: '#d8d8ec',
+  textSecondary: '#b8b8d0',
+  textTertiary: '#7a7a96',
+  textMuted: '#2e2e44',
+  accent: '#6667ab',
+  accentLight: 'rgba(102, 103, 171, 0.12)',
+  accentSoft: 'rgba(102, 103, 171, 0.2)',
+  accentBorder: 'rgba(102, 103, 171, 0.22)',
+  accentBorderMedium: 'rgba(102, 103, 171, 0.32)',
+  statusRunning: '#6667ab',
+  statusRunningBg: 'rgba(102, 103, 171, 0.12)',
+  statusPermission: '#6667ab',
+  statusPermissionGlow: 'rgba(102, 103, 171, 0.4)',
+  tabActive: '#222234',
+  tabActiveBorder: '#2e2e44',
+  tabHover: 'rgba(216, 216, 232, 0.05)',
+  userBubble: '#222234',
+  userBubbleBorder: '#2e2e44',
+  userBubbleText: '#d8d8ec',
+  toolBg: '#222234',
+  toolBorder: '#2e2e44',
+  toolRunningBorder: 'rgba(102, 103, 171, 0.35)',
+  toolRunningBg: 'rgba(102, 103, 171, 0.08)',
+  timelineLine: '#222234',
+  timelineNode: 'rgba(102, 103, 171, 0.22)',
+  timelineNodeActive: '#6667ab',
+  sendBg: '#6667ab',
+  sendHover: '#5556a0',
+  sendDisabled: 'rgba(102, 103, 171, 0.3)',
+  popoverBg: '#1e1e2e',
+  popoverBorder: '#2e2e44',
+  codeBg: '#0e0e18',
+  micBg: '#222234',
+  micColor: '#b8b8d0',
+  btnHoverColor: '#d8d8ec',
+  btnHoverBg: '#222234',
+  placeholder: '#6a6a86',
+  cardShadow: '0 2px 8px rgba(0,0,0,0.4)',
+  cardShadowCollapsed: '0 2px 6px rgba(0,0,0,0.5)',
 })
 
 // Pantone Color of the Year 2023 — dramatic, rich magenta on deep wine
@@ -564,17 +563,22 @@ export interface ThemeDefinition {
 const swatchOf = (p: ColorPalette) => ({ bg: p.containerBg, accent: p.accent, text: p.textPrimary })
 
 export const themes: Record<string, ThemeDefinition> = {
-  dark:      { name: 'dark',      displayName: 'Classic Dark',  base: 'dark',  palette: darkColors,          swatch: swatchOf(darkColors) },
-  light:     { name: 'light',     displayName: 'Classic Light', base: 'light', palette: lightColors,         swatch: swatchOf(lightColors) },
   mocha:     { name: 'mocha',     displayName: 'Mocha Mousse',  base: 'light', palette: mochaMousseColors,   swatch: swatchOf(mochaMousseColors) },
-  peach:     { name: 'peach',     displayName: 'Peach Fuzz',    base: 'light', palette: peachFuzzColors,     swatch: swatchOf(peachFuzzColors) },
+  veryperi:  { name: 'veryperi',  displayName: 'Very Peri',     base: 'dark',  palette: veryPeriColors,      swatch: swatchOf(veryPeriColors) },
   magenta:   { name: 'magenta',   displayName: 'Viva Magenta',  base: 'dark',  palette: vivaMagentaColors,   swatch: swatchOf(vivaMagentaColors) },
   calacatta: { name: 'calacatta', displayName: 'Calacatta',     base: 'light', palette: calacattaColors,     swatch: swatchOf(calacattaColors) },
   marquina:  { name: 'marquina',  displayName: 'Nero Marquina', base: 'dark',  palette: marquinaColors,      swatch: swatchOf(marquinaColors) },
 }
 
 /** Order in which themes appear in the picker */
-export const themeOrder: string[] = ['dark', 'light', 'mocha', 'peach', 'magenta', 'calacatta', 'marquina']
+export const themeOrder: string[] = ['mocha', 'calacatta', 'veryperi', 'magenta', 'marquina']
+
+/** Migrate legacy theme names that are no longer pickable. */
+function migrateLegacyTheme(mode: string): string {
+  if (mode === 'dark') return 'marquina'
+  if (mode === 'light') return 'calacatta'
+  return mode
+}
 
 // ─── Theme store ───
 
@@ -610,8 +614,8 @@ function syncTokensToCss(tokens: ColorPalette): void {
 
 /** Resolve a themeMode + OS state to the active ThemeDefinition. */
 function resolveTheme(mode: ThemeMode, systemIsDark: boolean): ThemeDefinition {
-  if (mode === 'system') return systemIsDark ? themes.dark : themes.light
-  return themes[mode as string] || themes.dark
+  if (mode === 'system') return systemIsDark ? themes.marquina : themes.calacatta
+  return themes[migrateLegacyTheme(mode as string)] || themes.marquina
 }
 
 function applyTheme(theme: ThemeDefinition): void {
@@ -624,14 +628,14 @@ function applyTheme(theme: ThemeDefinition): void {
 const SETTINGS_KEY = 'clui-settings'
 
 function loadSettings(): { themeMode: ThemeMode; soundEnabled: boolean; expandedUI: boolean } {
+  const DEFAULT_THEME: ThemeMode = 'marquina'
   try {
     const raw = localStorage.getItem(SETTINGS_KEY)
     if (raw) {
       const parsed = JSON.parse(raw)
-      const validMode =
-        parsed.themeMode === 'system' || (typeof parsed.themeMode === 'string' && parsed.themeMode in themes)
-          ? parsed.themeMode
-          : 'dark'
+      let mode: string = typeof parsed.themeMode === 'string' ? parsed.themeMode : DEFAULT_THEME
+      mode = migrateLegacyTheme(mode)
+      const validMode: ThemeMode = mode === 'system' || mode in themes ? mode : DEFAULT_THEME
       return {
         themeMode: validMode,
         soundEnabled: typeof parsed.soundEnabled === 'boolean' ? parsed.soundEnabled : true,
@@ -639,7 +643,7 @@ function loadSettings(): { themeMode: ThemeMode; soundEnabled: boolean; expanded
       }
     }
   } catch {}
-  return { themeMode: 'dark', soundEnabled: true, expandedUI: false }
+  return { themeMode: DEFAULT_THEME, soundEnabled: true, expandedUI: false }
 }
 
 function saveSettings(s: { themeMode: ThemeMode; soundEnabled: boolean; expandedUI: boolean }): void {
