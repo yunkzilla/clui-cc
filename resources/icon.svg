@@ -74,15 +74,8 @@
       fill="#fff3d4"/>
   </g>
 
-  <!-- Terminal baseline — a thin glowing rail spanning most of the width -->
+  <!-- Cursor block — the only deck reference left, no baseline rail -->
   <g>
-    <line x1="220" y1="800" x2="704" y2="800"
-          stroke="#ff9a2c" stroke-width="6" stroke-linecap="round"
-          filter="url(#md-glow-tight)" opacity="0.95"/>
-    <line x1="220" y1="800" x2="704" y2="800"
-          stroke="#fff3d4" stroke-width="3" stroke-linecap="round"/>
-
-    <!-- Blinking-style cursor block at the right end of the line -->
     <rect x="724" y="772" width="56" height="56" rx="4"
           fill="#ff9a2c" filter="url(#md-glow-tight)" opacity="0.95"/>
     <rect x="724" y="772" width="56" height="56" rx="4"

@@ -77,10 +77,23 @@ export function FloatingIcon() {
         >
           <MiraLogo size={28} color={NEON} />
         </span>
-        {/* Main M — centered in the puck. The deck baseline + cursor live
-            only on the full-size app icon; at 56px they were too small to
-            read and broke the visual balance. */}
+        {/* Main M — centered in the puck. */}
         <MiraLogo size={28} color={CORE} style={{ position: 'relative', zIndex: 1 }} />
+
+        {/* Cursor square — same composition note as the Dock icon: no
+            baseline rail, just the small block in the bottom-right corner. */}
+        <span
+          aria-hidden
+          style={{
+            position: 'absolute',
+            bottom: 9,
+            right: 14,
+            width: 6,
+            height: 6,
+            borderRadius: 1,
+            background: CORE,
+          }}
+        />
 
         {/* Status notification dot (running / unread) */}
         {dotColor && (
