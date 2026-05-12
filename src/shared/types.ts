@@ -322,6 +322,8 @@ export const IPC = {
   LIST_SESSIONS: 'clui:list-sessions',
   LOAD_SESSION: 'clui:load-session',
   DELETE_SESSION: 'clui:delete-session',
+  FIND_FILES: 'clui:find-files',
+  REVEAL_IN_FINDER: 'clui:reveal-in-finder',
 
   // One-way events (main → renderer)
   TEXT_CHUNK: 'clui:text-chunk',

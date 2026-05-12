@@ -730,6 +730,74 @@ ipcMain.handle(IPC.OPEN_EXTERNAL, async (_event, url: string) => {
   }
 })
 
+// ─── File search via macOS Spotlight ─────────────────────────────────────
+// Uses `mdfind` so results come from the system index — fast even on a
+// machine with millions of files. Limits result count + execution time
+// to keep the UI responsive.
+
+interface FindFilesResult {
+  name: string
+  path: string
+  isDirectory: boolean
+}
+
+ipcMain.handle(IPC.FIND_FILES, async (_event, opts: { query: string; scope?: string }): Promise<FindFilesResult[]> => {
+  const query = typeof opts?.query === 'string' ? opts.query.trim() : ''
+  const scope = typeof opts?.scope === 'string' && opts.scope.startsWith('/') ? opts.scope : homedir()
+  if (!query) return []
+  // Reject control characters + shell metacharacters; we pass via execFile
+  // so injection isn't a real risk, but malformed input wastes a process.
+  if (/[\0\r\n]/.test(query) || query.length > 200) return []
+  log(`IPC FIND_FILES: q="${query}" scope=${scope}`)
+
+  const { execFile } = require('child_process')
+  return new Promise<FindFilesResult[]>((resolve) => {
+    execFile(
+      '/usr/bin/mdfind',
+      ['-onlyin', scope, '-name', query],
+      { maxBuffer: 2 * 1024 * 1024, timeout: 4000 },
+      (err: Error | null, stdout: string) => {
+        if (err) {
+          log(`mdfind error: ${err.message}`)
+          return resolve([])
+        }
+        const lines = stdout.split('\n').filter(Boolean).slice(0, 40)
+        const { statSync } = require('fs')
+        const { basename } = require('path')
+        const results: FindFilesResult[] = []
+        for (const p of lines) {
+          try {
+            const st = statSync(p)
+            results.push({ name: basename(p), path: p, isDirectory: st.isDirectory() })
+          } catch {
+            // stale index entry — file no longer exists. Skip.
+          }
+        }
+        resolve(results)
+      },
+    )
+  })
+})
+
+ipcMain.handle(IPC.REVEAL_IN_FINDER, async (_event, p: string): Promise<boolean> => {
+  if (typeof p !== 'string' || /[\0\r\n]/.test(p) || !p.startsWith('/')) return false
+  try {
+    if (!existsSync(p)) return false
+    const stat = statSync(p)
+    // Folders: open the folder itself in Finder. Files: select them in the
+    // containing folder.
+    if (stat.isDirectory()) {
+      await shell.openPath(p)
+    } else {
+      shell.showItemInFolder(p)
+    }
+    return true
+  } catch (err) {
+    log(`REVEAL_IN_FINDER error: ${err instanceof Error ? err.message : String(err)}`)
+    return false
+  }
+})
+
 ipcMain.handle(IPC.ATTACH_FILES, async () => {
   if (!mainWindow) return null
   // macOS: activate app so unparented dialog appears on top

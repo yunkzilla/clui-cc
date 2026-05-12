@@ -27,6 +27,10 @@ export interface CluiAPI {
   listSessions(projectPath?: string): Promise<SessionMeta[]>
   loadSession(sessionId: string, projectPath?: string): Promise<SessionLoadMessage[]>
   deleteSession(sessionId: string, projectPath?: string): Promise<{ ok: boolean; error?: string }>
+  /** Spotlight-backed file search. Returns file/folder hits with basenames + absolute paths. */
+  findFiles(query: string, scope?: string): Promise<Array<{ name: string; path: string; isDirectory: boolean }>>
+  /** Reveal a file in Finder (or open the folder if path is a directory). */
+  revealInFinder(path: string): Promise<boolean>
   fetchMarketplace(forceRefresh?: boolean): Promise<{ plugins: CatalogPlugin[]; error: string | null }>
   listInstalledPlugins(): Promise<string[]>
   installPlugin(repo: string, pluginName: string, marketplace: string, sourcePath?: string, isSkillMd?: boolean): Promise<{ ok: boolean; error?: string }>
@@ -88,6 +92,8 @@ const api: CluiAPI = {
   listSessions: (projectPath?: string) => ipcRenderer.invoke(IPC.LIST_SESSIONS, projectPath),
   loadSession: (sessionId: string, projectPath?: string) => ipcRenderer.invoke(IPC.LOAD_SESSION, { sessionId, projectPath }),
   deleteSession: (sessionId: string, projectPath?: string) => ipcRenderer.invoke(IPC.DELETE_SESSION, { sessionId, projectPath }),
+  findFiles: (query: string, scope?: string) => ipcRenderer.invoke(IPC.FIND_FILES, { query, scope }),
+  revealInFinder: (path: string) => ipcRenderer.invoke(IPC.REVEAL_IN_FINDER, path),
   fetchMarketplace: (forceRefresh) => ipcRenderer.invoke(IPC.MARKETPLACE_FETCH, { forceRefresh }),
   listInstalledPlugins: () => ipcRenderer.invoke(IPC.MARKETPLACE_INSTALLED),
   installPlugin: (repo, pluginName, marketplace, sourcePath, isSkillMd) =>
